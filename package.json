@@ -1,1 +1,7 @@
-
+{
+  "name": "estatus-outbound-v2",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Outbound Status API",
+  "license": "MIT"
+}
