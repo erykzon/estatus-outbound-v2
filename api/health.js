@@ -1,15 +1,20 @@
-export default function handler(req, res) {
+import { redis } from "../lib/redis.js";
 
-    res.status(200).json({
+export default async function handler(req, res) {
+  try {
+    await redis.set("healthcheck", "OK");
 
-        status: "OK",
+    const value = await redis.get("healthcheck");
 
-        project: "Estatus Outbound V2",
-
-        version: "1.0",
-
-        serverTime: new Date().toISOString()
-
+    return res.status(200).json({
+      status: "OK",
+      redis: value,
+      serverTime: new Date().toISOString(),
     });
-
+  } catch (error) {
+    return res.status(500).json({
+      status: "ERROR",
+      message: error.message,
+    });
+  }
 }
