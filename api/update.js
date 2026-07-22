@@ -7,6 +7,7 @@
 
 import { createStatusModel } from "../models/statusModel.js";
 import { saveStatus } from "../lib/storage.js";
+import CONFIG from "../config/config.js";
 
 function send(res, status, body) {
     res.status(status).json(body);
@@ -18,7 +19,7 @@ export default async function handler(req, res) {
 
         return send(res, 405, {
             success: false,
-            error: "Method Not Allowed"
+            error: CONFIG.API.METHOD_NOT_ALLOWED
         });
 
     }
