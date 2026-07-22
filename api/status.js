@@ -1,47 +1,112 @@
+/**
+ * ============================================================
+ * API - Status
+ * Estatus Outbound V2
+ * ============================================================
+ */
+
 import {
     getLatestStatus,
-    getStatus
+    getStatus,
+    listBusinessDates
 } from "../lib/storage.js";
 
+function send(res, status, body) {
+    res.status(status).json(body);
+}
+
 export default async function handler(req, res) {
+
+    if (req.method !== "GET") {
+
+        return send(res, 405, {
+            success: false,
+            error: "Method Not Allowed"
+        });
+
+    }
 
     try {
 
         const { date } = req.query;
 
-        let data;
+        //------------------------------------------------
+        // Obtener fecha específica
+        //------------------------------------------------
 
         if (date) {
 
-            data = await getStatus(date);
+            const status = await getStatus(date);
 
-        } else {
+            if (!status) {
 
-            data = await getLatestStatus();
+                return send(res, 404, {
 
-        }
+                    success: false,
 
-        if (!data) {
+                    error: "Business date not found.",
 
-            return res.status(404).json({
+                    businessDate: date
 
-                success: false,
+                });
 
-                message: "No existe información."
+            }
+
+            return send(res, 200, {
+
+                success: true,
+
+                data: status
 
             });
 
         }
 
-        return res.status(200).json(data);
+        //------------------------------------------------
+        // Obtener último día
+        //------------------------------------------------
 
-    } catch (err) {
+        const latest = await getLatestStatus();
 
-        return res.status(500).json({
+        if (!latest) {
+
+            return send(res, 404, {
+
+                success: false,
+
+                error: "No data available."
+
+            });
+
+        }
+
+        //------------------------------------------------
+        // También devolver fechas disponibles
+        //------------------------------------------------
+
+        const dates = await listBusinessDates();
+
+        return send(res, 200, {
+
+            success: true,
+
+            availableDates: dates,
+
+            data: latest
+
+        });
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        return send(res, 500, {
 
             success: false,
 
-            message: err.message
+            error: error.message
 
         });
 
