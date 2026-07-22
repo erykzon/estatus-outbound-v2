@@ -1,27 +1,40 @@
-export default function handler(req, res) {
+import { saveStatus } from "../lib/storage.js";
+
+export default async function handler(req, res) {
 
     if (req.method !== "POST") {
 
         return res.status(405).json({
-
             success: false,
-
-            message: "Method Not Allowed"
-
+            message: "Método no permitido."
         });
 
     }
 
-    const body = req.body;
+    try {
 
-    return res.status(200).json({
+        const result = await saveStatus(req.body);
 
-        success: true,
+        return res.status(200).json({
 
-        received: body,
+            success: true,
 
-        message: "Datos recibidos correctamente"
+            message: "Información almacenada correctamente.",
 
-    });
+            businessDate: result.businessDate
+
+        });
+
+    } catch (err) {
+
+        return res.status(500).json({
+
+            success: false,
+
+            message: err.message
+
+        });
+
+    }
 
 }
