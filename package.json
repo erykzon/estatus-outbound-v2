@@ -2,6 +2,8 @@
   "name": "estatus-outbound-v2",
   "version": "1.0.0",
   "private": true,
-  "description": "Outbound Status API",
-  "license": "MIT"
+  "type": "module",
+  "dependencies": {
+    "@upstash/redis": "^1.35.3"
+  }
 }
