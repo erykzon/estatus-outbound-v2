@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Estatus Outbound V2</title>
+
+    <link rel="stylesheet" href="css/styles.css">
+
+</head>
+
+<body>
+
+    <header class="topbar">
+
+        <h1>Estatus Outbound V2</h1>
+
+        <button id="btnRefresh">
+            Actualizar
+        </button>
+
+    </header>
+
+    <main class="container">
+
+        <section class="info">
+
+            <div class="card">
+
+                <label>Business Date</label>
+
+                <h2 id="businessDate">--</h2>
+
+            </div>
+
+            <div class="card">
+
+                <label>Última actualización</label>
+
+                <h2 id="generatedAt">--</h2>
+
+            </div>
+
+        </section>
+
+        <section class="kpis">
+
+            <div class="kpi">
+                <span>CN</span>
+                <h2 id="kpiCN">0</h2>
+            </div>
+
+            <div class="kpi">
+                <span>Piezas</span>
+                <h2 id="kpiPieces">0</h2>
+            </div>
+
+            <div class="kpi">
+                <span>Clientes</span>
+                <h2 id="kpiCustomers">0</h2>
+            </div>
+
+            <div class="kpi">
+                <span>Almacenes</span>
+                <h2 id="kpiWarehouses">0</h2>
+            </div>
+
+            <div class="kpi">
+                <span>Armado</span>
+                <h2 id="kpiArmado">0</h2>
+            </div>
+
+            <div class="kpi">
+                <span>Laser</span>
+                <h2 id="kpiLaser">0</h2>
+            </div>
+
+        </section>
+
+        <section class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Warehouse</th>
+                        <th>Cliente</th>
+                        <th>CN</th>
+                        <th>Piezas</th>
+                        <th>Estatus</th>
+                        <th>Unidad</th>
+                        <th>Cita</th>
+                        <th>Salida</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="tableBody">
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+    <script type="module" src="js/app.js"></script>
+
+</body>
+
+</html>
