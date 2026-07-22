@@ -1,15 +1,50 @@
-export default function handler(req, res) {
+import {
+    getLatestStatus,
+    getStatus
+} from "../lib/storage.js";
 
-    res.status(200).json({
+export default async function handler(req, res) {
 
-        success: true,
+    try {
 
-        history: 0,
+        const { date } = req.query;
 
-        rows: [],
+        let data;
 
-        lastUpdate: null
+        if (date) {
 
-    });
+            data = await getStatus(date);
+
+        } else {
+
+            data = await getLatestStatus();
+
+        }
+
+        if (!data) {
+
+            return res.status(404).json({
+
+                success: false,
+
+                message: "No existe información."
+
+            });
+
+        }
+
+        return res.status(200).json(data);
+
+    } catch (err) {
+
+        return res.status(500).json({
+
+            success: false,
+
+            message: err.message
+
+        });
+
+    }
 
 }
