@@ -1,37 +1,102 @@
+/**
+ * ============================================================
+ * API - Update Status
+ * Estatus Outbound V2
+ * ============================================================
+ */
+
+import { createStatusModel } from "../models/statusModel.js";
 import { saveStatus } from "../lib/storage.js";
+
+function send(res, status, body) {
+    res.status(status).json(body);
+}
 
 export default async function handler(req, res) {
 
     if (req.method !== "POST") {
 
-        return res.status(405).json({
+        return send(res, 405, {
             success: false,
-            message: "Método no permitido."
+            error: "Method Not Allowed"
         });
 
     }
 
     try {
 
-        const result = await saveStatus(req.body);
+        const payload = req.body;
 
-        return res.status(200).json({
+        if (!payload) {
+
+            return send(res, 400, {
+                success: false,
+                error: "Payload is required."
+            });
+
+        }
+
+        if (!payload.businessDate) {
+
+            return send(res, 400, {
+                success: false,
+                error: "businessDate is required."
+            });
+
+        }
+
+        if (!Array.isArray(payload.rows)) {
+
+            return send(res, 400, {
+                success: false,
+                error: "rows must be an array."
+            });
+
+        }
+
+        //----------------------------------------
+        // Construcción del modelo
+        //----------------------------------------
+
+        const model = createStatusModel(payload);
+
+        //----------------------------------------
+        // Guardar en Redis
+        //----------------------------------------
+
+        await saveStatus(model);
+
+        //----------------------------------------
+        // Respuesta
+        //----------------------------------------
+
+        return send(res, 200, {
 
             success: true,
 
-            message: "Información almacenada correctamente.",
+            message: "Status stored successfully.",
 
-            businessDate: result.businessDate
+            businessDate: model.businessDate,
+
+            summary: model.summary,
+
+            records: model.rows.length,
+
+            generatedAt: model.generatedAt
 
         });
 
-    } catch (err) {
+    }
 
-        return res.status(500).json({
+    catch (error) {
+
+        console.error(error);
+
+        return send(res, 500, {
 
             success: false,
 
-            message: err.message
+            error: error.message
 
         });
 
