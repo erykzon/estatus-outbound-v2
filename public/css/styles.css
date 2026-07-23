@@ -341,3 +341,30 @@ button{
     background:linear-gradient(135deg,#DA1E28,#FA4D56);
 
 }
+
+
+button{
+
+    border:none;
+
+    background:white;
+
+    color:#0F62FE;
+
+    padding:10px 18px;
+
+    border-radius:8px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+button:hover{
+
+    transform:scale(1.04);
+
+}
