@@ -145,3 +145,93 @@ button{
     cursor:pointer;
 
 }
+
+.data-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+.data-table thead{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:5;
+
+}
+
+.data-table tbody tr:nth-child(even){
+
+    background:#fafafa;
+
+}
+
+.data-table tbody tr:hover{
+
+    background:#eef6ff;
+
+}
+
+.right{
+
+    text-align:right;
+
+}
+
+.badge{
+
+    display:inline-block;
+
+    padding:4px 10px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+.success{
+
+    background:#dff5e3;
+
+    color:#207a3c;
+
+}
+
+.warning{
+
+    background:#fff4d6;
+
+    color:#9d6b00;
+
+}
+
+.yes{
+
+    background:#d9f7e6;
+
+    color:#1c7d43;
+
+}
+
+.no{
+
+    background:#ececec;
+
+    color:#666;
+
+}
+
+.table-container{
+
+    max-height:650px;
+
+    overflow:auto;
+
+}
