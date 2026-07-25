@@ -5,6 +5,7 @@
  * Version: 2.0
  * ============================================================
  */
+import MetricsEngine from "../services/metricsEngine.js";
 
 function normalizeBoolean(value) {
     if (typeof value === "boolean") return value;
@@ -81,50 +82,6 @@ function mapRow(row) {
 
 }
 
-function calculateSummary(rows) {
-
-    const warehouses = new Set();
-    const customers = new Set();
-
-    let totalCN = 0;
-    let totalPieces = 0;
-    let totalArmado = 0;
-    let totalLaser = 0;
-
-    rows.forEach(r => {
-
-        warehouses.add(r.warehouse);
-        customers.add(r.customer);
-
-        totalCN++;
-
-        totalPieces += r.pieces;
-
-        if (r.armado)
-            totalArmado++;
-
-        if (r.laser)
-            totalLaser++;
-
-    });
-
-    return {
-
-        totalCN,
-
-        totalPieces,
-
-        totalWarehouses: warehouses.size,
-
-        totalCustomers: customers.size,
-
-        totalArmado,
-
-        totalLaser
-
-    };
-
-}
 
 export function createStatusModel(payload) {
 
@@ -150,7 +107,7 @@ export function createStatusModel(payload) {
             normalizeString(payload.generatedBy),
 
         summary:
-            calculateSummary(rows),
+            MetricsEngine.calculate(rows),
 
         rows
 
