@@ -17,7 +17,7 @@ import { initNav, onSectionChange } from "./nav.js";
 import { initOperationFilters, renderOperation } from "./operation.js";
 import { renderRisks } from "./risks.js";
 import { renderPreparation } from "./preparation.js";
-import { renderCharts } from "./charts.js";
+import { renderCharts, initChartsFilters } from "./charts.js";
 import { initSearch } from "./search.js";
 
 async function loadDashboard(){
@@ -77,6 +77,7 @@ onSectionChange((sectionId) => {
     }
 
     if(sectionId === "charts"){
+        initChartsFilters();
         renderCharts();
         renderedSections.add("charts");
     }

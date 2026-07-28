@@ -12,6 +12,8 @@ import { store } from "./store.js";
 import { formatNumber, formatDate, normalizeText } from "./utils.js";
 import { openModal } from "./modal.js";
 
+let statusFilterWired = false;
+
 export function renderPreparation(){
 
     const rows = store.allRows;
@@ -19,6 +21,14 @@ export function renderPreparation(){
     renderVolumeCards(rows);
     renderSharedCNs(rows);
     renderDelayedCNs(rows);
+
+    if(!statusFilterWired){
+        const select = document.getElementById("prep-delayed-status-filter");
+        if(select){
+            select.addEventListener("change", () => renderDelayedCNs(store.allRows));
+            statusFilterWired = true;
+        }
+    }
 
 }
 
@@ -82,7 +92,10 @@ function renderSharedCNs(rows){
 
     let rowsHtml = "";
     cnList.forEach(([cn, whs]) => {
-        rowsHtml += `<tr><td>${cn}</td><td>${[...whs].join(", ")}</td></tr>`;
+        const badges = [...whs].map(wh =>
+            `<span class="badge badge-na" style="margin:2px 4px 2px 0">${wh}</span>`
+        ).join("");
+        rowsHtml += `<tr><td>${cn}</td><td>${badges}</td></tr>`;
     });
 
     el.innerHTML = `
@@ -94,19 +107,56 @@ function renderSharedCNs(rows){
 
 }
 
+const EXCLUDED_DELAYED_STATUS = ["1-CANCELADO", "12-REPROGRAMADO"];
+
 function renderDelayedCNs(rows){
 
     const todayISO = new Date().toISOString().split("T")[0];
 
     const delayed = rows.filter(r => {
         const rowDate = r.date ? r.date.split("T")[0] : "";
-        const isFinalized = normalizeText(r.orderStatus).toUpperCase().includes("FINALIZADO");
-        return rowDate && rowDate < todayISO && !isFinalized;
+        const orderStatus = normalizeText(r.orderStatus).toUpperCase();
+        const isFinalized = orderStatus.includes("FINALIZADO");
+        const isExcluded = EXCLUDED_DELAYED_STATUS.includes(orderStatus);
+        return rowDate && rowDate < todayISO && !isFinalized && !isExcluded;
     });
+
+    populateDelayedStatusFilter(delayed);
+
+    const statusFilter = document.getElementById("prep-delayed-status-filter");
+    const selectedStatus = statusFilter ? statusFilter.value : "";
+
+    const visibleRows = selectedStatus
+        ? delayed.filter(r => r.orderStatus === selectedStatus)
+        : delayed;
+
+    renderDelayedTable(visibleRows, delayed.length);
+
+}
+
+function populateDelayedStatusFilter(delayed){
+
+    const select = document.getElementById("prep-delayed-status-filter");
+    if(!select) return;
+
+    const currentValue = select.value;
+    const statuses = [...new Set(delayed.map(r => r.orderStatus).filter(Boolean))]
+        .sort((a,b) => (parseInt(a)||999) - (parseInt(b)||999));
+
+    select.innerHTML = '<option value="">Todos los estatus</option>' +
+        statuses.map(s => `<option value="${s}">${s}</option>`).join("");
+
+    if(statuses.includes(currentValue)){
+        select.value = currentValue;
+    }
+
+}
+
+function renderDelayedTable(delayed, totalCount){
 
     const el = document.getElementById("prep-delayed-table");
 
-    document.getElementById("prep-delayed-count").textContent = delayed.length;
+    document.getElementById("prep-delayed-count").textContent = totalCount;
 
     if(!delayed.length){
         el.innerHTML = '<div class="empty-state"><p>Sin CNs rezagados</p></div>';

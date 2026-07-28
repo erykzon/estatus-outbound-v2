@@ -12,16 +12,53 @@
  * ============================================================
  */
 
-import { store } from "./store.js";
+import { store, applyChartsFilters, getWarehouseList } from "./store.js";
 import { formatNumber, formatDate, normalizeText, normalizeUpper, parseArrivalTime } from "./utils.js";
 import { openModal } from "./modal.js";
 
 let catChart = null;
 let arrivalChart = null;
+let chartsFiltersWired = false;
+
+export function initChartsFilters(){
+
+    const warehouses = getWarehouseList();
+    const select = document.getElementById("charts-warehouse");
+
+    if(select){
+        select.innerHTML = '<option value="">Todos</option>';
+        warehouses.forEach(w => {
+            const opt = document.createElement("option");
+            opt.value = w;
+            opt.textContent = w;
+            select.appendChild(opt);
+        });
+    }
+
+    if(!chartsFiltersWired){
+        const applyBtn = document.getElementById("charts-apply-btn");
+        if(applyBtn){
+            applyBtn.addEventListener("click", handleApplyChartsFilters);
+        }
+        chartsFiltersWired = true;
+    }
+
+}
+
+function handleApplyChartsFilters(){
+
+    applyChartsFilters({
+        date: document.getElementById("charts-date").value,
+        warehouse: document.getElementById("charts-warehouse").value
+    });
+
+    renderCharts();
+
+}
 
 export function renderCharts(){
 
-    const rows = store.allRows;
+    const rows = store.charts.filteredRows;
 
     renderCATDistribution(rows);
     renderLaserVolume(rows);

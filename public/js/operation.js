@@ -9,7 +9,7 @@
  * ============================================================
  */
 
-import { store, applyFilters, getWarehouseList } from "./store.js";
+import { store, applyOperationFilters, getWarehouseList } from "./store.js";
 import { formatNumber } from "./utils.js";
 import { openModal } from "./modal.js";
 
@@ -41,7 +41,7 @@ export function initOperationFilters(){
 
 function handleApplyFilters(){
 
-    applyFilters({
+    applyOperationFilters({
         dateStart: document.getElementById("op-date-start").value,
         dateEnd: document.getElementById("op-date-end").value,
         warehouse: document.getElementById("op-warehouse").value
@@ -53,7 +53,7 @@ function handleApplyFilters(){
 
 export function renderOperation(){
 
-    const rows = store.filteredRows;
+    const rows = store.operation.filteredRows;
 
     renderKPIs(rows);
     renderWarehouseCards(rows);
