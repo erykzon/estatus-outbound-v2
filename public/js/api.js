@@ -1,3 +1,10 @@
+/**
+ * ============================================================
+ * API Client
+ * Estatus Outbound V2
+ * ============================================================
+ */
+
 const API = "/api";
 
 export async function getLatestStatus(){
