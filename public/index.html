@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Estatus Outbound V2</title>
 
     <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 
 </head>
 
@@ -19,129 +18,229 @@
 
         <h1>Estatus Outbound V2</h1>
 
-        <button id="btnRefresh">
-            Actualizar
-        </button>
+        <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="global-search-input" placeholder="Buscar CN...">
+        </div>
+
+        <div class="topbar-actions">
+            <button class="btn" id="btnRefresh">↻ Actualizar</button>
+            <button class="btn-icon" id="btn-theme-toggle" title="Cambiar tema">☀️</button>
+        </div>
 
     </header>
 
+    <nav class="nav-tabs">
+        <div class="nav-tab" data-nav-section="operation">📦 Operación</div>
+        <div class="nav-tab" data-nav-section="preparation">🛠️ Preparación</div>
+        <div class="nav-tab" data-nav-section="charts">📊 Gráficas</div>
+        <div class="nav-tab" data-nav-section="risks">⚠️ Riesgos</div>
+    </nav>
+
     <main class="container">
 
-        <section class="info">
+        <section class="section" id="section-operation">
 
-            <div class="card">
-
-                <label>Business Date</label>
-
-                <h2 id="businessDate">--</h2>
-
+            <div class="info">
+                <div class="card">
+                    <label>Business Date</label>
+                    <h2 id="businessDate">--</h2>
+                </div>
+                <div class="card">
+                    <label>Última actualización</label>
+                    <h2 id="generatedAt">--</h2>
+                </div>
             </div>
 
-            <div class="card">
+            <div class="toolbar">
+                <div class="filter-group">
+                    <label>Fecha</label>
+                    <input type="date" id="op-date-start">
+                </div>
+                <div class="filter-group">
+                    <label>Hasta</label>
+                    <input type="date" id="op-date-end">
+                </div>
+                <div class="filter-group">
+                    <label>Almacén</label>
+                    <select id="op-warehouse"><option value="">Todos</option></select>
+                </div>
+                <button class="btn" id="op-apply-btn">Aplicar</button>
+            </div>
 
-                <label>Última actualización</label>
+            <div class="kpis">
+                <div class="kpi">
+                    <div class="kpi-title">CN Totales</div>
+                    <div class="kpi-value" id="op-kpi-cns">0</div>
+                </div>
+                <div class="kpi">
+                    <div class="kpi-title">Piezas</div>
+                    <div class="kpi-value" id="op-kpi-pieces">0</div>
+                </div>
+                <div class="kpi">
+                    <div class="kpi-title">Embarcado</div>
+                    <div class="kpi-value" id="op-kpi-embarcado" style="color:var(--teal)">0</div>
+                </div>
+                <div class="kpi">
+                    <div class="kpi-title">Por arribar</div>
+                    <div class="kpi-value" id="op-kpi-porarribar" style="color:var(--red)">0</div>
+                </div>
+            </div>
 
-                <h2 id="generatedAt">--</h2>
+            <div class="alm-grid" id="op-warehouse-grid"></div>
 
+            <div class="table-card">
+                <div class="table-title">Estatus CN vs Estatus Unidades</div>
+                <div class="table-wrap">
+                    <table id="op-pivot-table"></table>
+                </div>
             </div>
 
         </section>
 
-        <section class="kpis">
+        <section class="section" id="section-preparation">
 
-    <div class="kpi primary">
-        <div class="kpi-title">CN Totales</div>
-        <div class="kpi-value" id="kpiCN">0</div>
-    </div>
+            <div class="prep-grid">
+                <div class="prep-card" id="prep-armado-card">
+                    <div class="prep-card-title">Volumen de Armado</div>
+                    <div class="prep-card-value" id="prep-armado-value">0</div>
+                    <div class="prep-card-sub" id="prep-armado-sub">—</div>
+                </div>
+                <div class="prep-card" id="prep-upc-card">
+                    <div class="prep-card-title">Revisión UPC</div>
+                    <div class="prep-card-value" id="prep-upc-value">0</div>
+                    <div class="prep-card-sub" id="prep-upc-sub">—</div>
+                </div>
+                <div class="prep-card" id="prep-insumos-card">
+                    <div class="prep-card-title">Insumos</div>
+                    <div class="prep-card-value" id="prep-insumos-value">0</div>
+                    <div class="prep-card-sub" id="prep-insumos-sub">—</div>
+                </div>
+            </div>
 
-    <div class="kpi success">
-        <div class="kpi-title">Piezas</div>
-        <div class="kpi-value" id="kpiPieces">0</div>
-    </div>
+            <div class="table-card" style="margin-bottom:16px">
+                <div class="table-title">CNs compartidos entre almacenes</div>
+                <div class="table-wrap" id="prep-shared-table"></div>
+            </div>
 
-    <div class="kpi orange">
-        <div class="kpi-title">Clientes</div>
-        <div class="kpi-value" id="kpiCustomers">0</div>
-    </div>
+            <div class="table-card">
+                <div class="table-title">
+                    CNs rezagados <span class="pill" style="margin-left:6px"><b id="prep-delayed-count">0</b></span>
+                </div>
+                <div class="table-wrap" id="prep-delayed-table"></div>
+            </div>
 
-    <div class="kpi purple">
-        <div class="kpi-title">Almacenes</div>
-        <div class="kpi-value" id="kpiWarehouses">0</div>
-    </div>
+        </section>
 
-    <div class="kpi teal">
-        <div class="kpi-title">Armado</div>
-        <div class="kpi-value" id="kpiArmado">0</div>
-    </div>
+        <section class="section" id="section-charts">
 
-    <div class="kpi red">
-        <div class="kpi-title">Laser</div>
-        <div class="kpi-value" id="kpiLaser">0</div>
-    </div>
+            <div class="alm-grid" style="grid-template-columns:1fr 1fr">
 
-</section>
-        <section class="table-container">
+                <div class="alm-card">
+                    <div class="alm-name" style="margin-bottom:10px">Distribución por CAT</div>
+                    <div style="position:relative;height:220px">
+                        <canvas id="chart-cat"></canvas>
+                    </div>
+                </div>
 
-            <table class="data-table">
+                <div class="alm-card">
+                    <div class="alm-name" style="margin-bottom:6px">Volumen de Laser</div>
+                    <div class="kpi-value" id="chart-laser-total" style="color:var(--red);margin-bottom:8px">0</div>
+                    <div id="chart-laser-breakdown"></div>
+                </div>
 
-               <thead>
-                
-                <tr>
-                
-                <th>Warehouse</th>
-                
-                <th>Cliente</th>
-                
-                <th>CN</th>
-                
-                <th>Piezas</th>
-                
-                <th>Estatus</th>
-                
-                <th>Unidad</th>
-                
-                <th>Cita</th>
-                
-                <th>Salida</th>
-                
-                <th>Corte</th>
-                
-                <th>CAT</th>
-                
-                <th>Laser</th>
-                
-                <th>Armado</th>
-                
-                <th>Insumos</th>
-                
-                </tr>
-                
-                </thead>
+            </div>
 
-                    <tr>
+            <div class="alm-grid" style="grid-template-columns:1fr 1fr">
 
-                        <th>Warehouse</th>
-                        <th>Cliente</th>
-                        <th>CN</th>
-                        <th>Piezas</th>
-                        <th>Estatus</th>
-                        <th>Unidad</th>
-                        <th>Cita</th>
-                        <th>Salida</th>
+                <div class="alm-card">
+                    <div class="alm-name" style="margin-bottom:10px">Puntualidad de Transporte</div>
+                    <div class="alm-stats" style="grid-template-columns:1fr 1fr 1fr">
+                        <div class="stat"><div class="stat-v" style="color:var(--teal)" id="punct-transport-ontime">0</div><div class="stat-l">A tiempo</div></div>
+                        <div class="stat"><div class="stat-v" style="color:var(--amber)" id="punct-transport-tight">0</div><div class="stat-l">Justo</div></div>
+                        <div class="stat"><div class="stat-v" style="color:var(--red)" id="punct-transport-late">0</div><div class="stat-l">Tarde</div></div>
+                    </div>
+                    <div class="prog-labels" style="margin-top:8px">
+                        <span>% puntualidad: <b id="punct-transport-pct">0%</b></span>
+                        <span>Sin dato: <b id="punct-transport-nodata">0</b></span>
+                    </div>
+                </div>
 
-                    </tr>
+                <div class="alm-card">
+                    <div class="alm-name" style="margin-bottom:10px">Puntualidad de Almacén <span style="font-size:10px;color:var(--text3);font-weight:400">(preliminar)</span></div>
+                    <div class="alm-stats" style="grid-template-columns:1fr 1fr 1fr">
+                        <div class="stat"><div class="stat-v" style="color:var(--teal)" id="punct-warehouse-ontime">0</div><div class="stat-l">A tiempo</div></div>
+                        <div class="stat"><div class="stat-v" style="color:var(--red)" id="punct-warehouse-late">0</div><div class="stat-l">Tarde</div></div>
+                        <div class="stat"><div class="stat-v" style="color:var(--text2)" id="punct-warehouse-pending">0</div><div class="stat-l">Pendiente</div></div>
+                    </div>
+                </div>
 
-                </thead>
+            </div>
 
-                <tbody id="tableBody">
+            <div class="alm-card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                    <div class="alm-name">Tendencia de horas de arribo</div>
+                    <button class="btn" id="chart-arrival-nodata-btn" style="height:28px;font-size:11px">
+                        Sin captura: <span id="chart-arrival-nodata-count">0</span>
+                    </button>
+                </div>
+                <div style="position:relative;height:240px">
+                    <canvas id="chart-arrival-trend"></canvas>
+                </div>
+            </div>
 
-                </tbody>
+        </section>
 
-            </table>
+        <section class="section" id="section-risks">
+
+            <div class="risk-columns">
+
+                <div class="risk-col max">
+                    <div class="risk-col-head">
+                        <span class="risk-col-title">Alerta Máxima</span>
+                        <span class="risk-col-count" id="risk-max-count">0</span>
+                    </div>
+                    <div class="risk-list" id="risk-max-list"></div>
+                </div>
+
+                <div class="risk-col almacen">
+                    <div class="risk-col-head">
+                        <span class="risk-col-title">Riesgo de Almacén</span>
+                        <span class="risk-col-count" id="risk-almacen-count">0</span>
+                    </div>
+                    <div class="risk-list" id="risk-almacen-list"></div>
+                </div>
+
+                <div class="risk-col transporte">
+                    <div class="risk-col-head">
+                        <span class="risk-col-title">Riesgo de Transporte</span>
+                        <span class="risk-col-count" id="risk-transporte-count">0</span>
+                    </div>
+                    <div class="risk-list" id="risk-transporte-list"></div>
+                </div>
+
+            </div>
 
         </section>
 
     </main>
+
+    <nav class="bottom-nav">
+        <div class="bottom-nav-inner">
+            <div class="bottom-nav-item" data-nav-section="operation">
+                <span class="icon">📦</span><span>Operación</span>
+            </div>
+            <div class="bottom-nav-item" data-nav-section="preparation">
+                <span class="icon">🛠️</span><span>Preparación</span>
+            </div>
+            <div class="bottom-nav-item" data-nav-section="charts">
+                <span class="icon">📊</span><span>Gráficas</span>
+            </div>
+            <div class="bottom-nav-item" data-nav-section="risks">
+                <span class="icon">⚠️</span><span>Riesgos</span>
+            </div>
+        </div>
+    </nav>
 
     <script type="module" src="js/app.js"></script>
 
