@@ -124,8 +124,11 @@
             </div>
 
             <div class="table-card">
-                <div class="table-title">
-                    CNs rezagados <span class="pill" style="margin-left:6px"><b id="prep-delayed-count">0</b></span>
+                <div class="table-title" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                    <span>CNs rezagados <span class="pill"><b id="prep-delayed-count">0</b></span></span>
+                    <select id="prep-delayed-status-filter" style="margin-left:auto;font-size:12px;border:1px solid var(--border);border-radius:7px;padding:4px 8px;background:var(--card);color:var(--text);height:28px">
+                        <option value="">Todos los estatus</option>
+                    </select>
                 </div>
                 <div class="table-wrap" id="prep-delayed-table"></div>
             </div>
@@ -133,6 +136,19 @@
         </section>
 
         <section class="section" id="section-charts">
+
+            <div class="toolbar">
+                <div class="filter-group">
+                    <label>Fecha</label>
+                    <input type="date" id="charts-date">
+                </div>
+                <div class="filter-group">
+                    <label>Almacén</label>
+                    <select id="charts-warehouse"><option value="">Todos</option></select>
+                </div>
+                <button class="btn" id="charts-apply-btn">Aplicar</button>
+                <span class="pill" style="margin-left:auto">Filtro independiente de las demás secciones</span>
+            </div>
 
             <div class="alm-grid" style="grid-template-columns:1fr 1fr">
 
