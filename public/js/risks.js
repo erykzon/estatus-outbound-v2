@@ -34,6 +34,15 @@ function isExcluded(row){
     const deliveryMode = normalizeUpper(row.deliveryMode);
     if(EXCLUDED_DELIVERY_MODES.includes(deliveryMode)) return true;
 
+    // Un CN ya Finalizado y/o Embarcado es historia resuelta, no
+    // riesgo activo. Sin esto, un Max de Salida de hace semanas
+    // se marcaria como "vencido" aunque el pedido ya se haya
+    // completado correctamente en su momento.
+    const eu = normalizeUpper(row.unitStatus);
+    const isFinalized = orderStatus.includes("FINALIZADO");
+    const isEmbarcado = eu === "EMBARCADO";
+    if(isFinalized || isEmbarcado) return true;
+
     return false;
 
 }
@@ -125,7 +134,7 @@ export function renderRisks(){
 
     renderRiskList("risk-max-list", maxAlert, {showRole: true});
     renderRiskList("risk-almacen-list", warehouseRisk, {showRole: false, staticPhase: "amber"});
-    renderRiskList("risk-transporte-list", transportRisk, {showRole: false});
+    renderRiskList("risk-transporte-list", transportRisk, {showRole: false, dateField: "loadStart", dateLabel: "Inicio de carga"});
 
     // Diagnostico: abre la consola del navegador y escribe
     // debugRiskCN("2607044187") para ver por que un CN especifico
@@ -148,7 +157,7 @@ export function renderRisks(){
 
 }
 
-function renderRiskList(elementId, items, {showRole, staticPhase}){
+function renderRiskList(elementId, items, {showRole, staticPhase, dateField = "maxDeparture", dateLabel = "Salida máx"}){
 
     const el = document.getElementById(elementId);
 
@@ -166,9 +175,10 @@ function renderRiskList(elementId, items, {showRole, staticPhase}){
             : 60; // valor fijo para Riesgo de Almacen (sin cuenta regresiva)
 
         const isExpired = phase === "expired";
+        const relevantDate = item.row[dateField];
         const departureText = isExpired
-            ? `Vencido · salida máx ${formatDateTime(item.row.maxDeparture)}`
-            : `Salida máx ${formatDateTime(item.row.maxDeparture)}`;
+            ? `Vencido · ${dateLabel.toLowerCase()} ${formatDateTime(relevantDate)}`
+            : `${dateLabel} ${formatDateTime(relevantDate)}`;
 
         const tooltip = item.hours !== null && item.hours !== undefined
             ? `${item.hours > 0 ? item.hours.toFixed(1)+" hrs restantes" : "Vencido hace "+Math.abs(item.hours).toFixed(1)+" hrs"} · Cita: ${formatDateTime(item.row.appointment)}`

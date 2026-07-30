@@ -48,7 +48,8 @@ export function initChartsFilters(){
 function handleApplyChartsFilters(){
 
     applyChartsFilters({
-        date: document.getElementById("charts-date").value,
+        dateStart: document.getElementById("charts-date-start").value,
+        dateEnd: document.getElementById("charts-date-end").value,
         warehouse: document.getElementById("charts-warehouse").value
     });
 

@@ -29,7 +29,7 @@ export const store = {
 
     charts: {
         filteredRows: [],
-        filters: { date: "", warehouse: "" }
+        filters: { dateStart: "", dateEnd: "", warehouse: "" }
     }
 
     // Riesgos NO tiene filtro de fecha/almacen: siempre evalua

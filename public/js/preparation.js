@@ -124,24 +124,16 @@ function renderSharedCNs(rows){
     const cnList = Object.entries(byCN).filter(([cn, whs]) => whs.size > 1);
 
     if(!cnList.length){
-        el.innerHTML = '<div class="empty-state"><p>Sin CNs compartidos en este momento</p></div>';
+        el.innerHTML = '<div style="color:var(--text2);font-size:11px;padding:10px 0">Sin CNs compartidos</div>';
         return;
     }
 
-    let rowsHtml = "";
-    cnList.forEach(([cn, whs]) => {
-        const badges = [...whs].map(wh =>
-            `<span class="badge badge-na" style="margin:2px 4px 2px 0">${wh}</span>`
-        ).join("");
-        rowsHtml += `<tr><td>${cn}</td><td>${badges}</td></tr>`;
-    });
-
-    el.innerHTML = `
-        <table>
-          <thead><tr><th>CN</th><th>Almacenes</th></tr></thead>
-          <tbody>${rowsHtml}</tbody>
-        </table>
-    `;
+    el.innerHTML = cnList.map(([cn, whs]) => `
+        <div style="padding:6px 0;border-bottom:1px solid var(--border2)">
+          <div style="font-weight:700;color:var(--text);margin-bottom:3px">${cn}</div>
+          <div>${[...whs].map(wh => `<span class="badge badge-na" style="margin:2px 3px 0 0;font-size:10px">${wh}</span>`).join("")}</div>
+        </div>
+    `).join("");
 
 }
 
