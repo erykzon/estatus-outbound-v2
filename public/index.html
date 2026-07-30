@@ -100,6 +100,23 @@
 
         <section class="section" id="section-preparation">
 
+            <div class="toolbar">
+                <div class="filter-group">
+                    <label>Fecha</label>
+                    <input type="date" id="prep-date-start">
+                </div>
+                <div class="filter-group">
+                    <label>Hasta</label>
+                    <input type="date" id="prep-date-end">
+                </div>
+                <div class="filter-group">
+                    <label>Almacén</label>
+                    <select id="prep-warehouse"><option value="">Todos</option></select>
+                </div>
+                <button class="btn" id="prep-apply-btn">Aplicar</button>
+                <span class="pill" style="margin-left:auto">Filtro independiente de las demás secciones</span>
+            </div>
+
             <div class="prep-grid">
                 <div class="prep-card" id="prep-armado-card">
                     <div class="prep-card-title">Volumen de Armado</div>
