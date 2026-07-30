@@ -50,10 +50,14 @@ function classifyRisks(rows){
     const maxAlert = [];
     const warehouseRisk = [];
     const transportRisk = [];
+    const unclassified = [];
 
     rows.forEach(row => {
 
-        if(isExcluded(row)) return;
+        if(isExcluded(row)){
+            unclassified.push({row, reason: "Excluido (Cancelado/Reprogramado o Modalidad especial)"});
+            return;
+        }
 
         const eu = normalizeUpper(row.unitStatus);
         const hasArrived = eu === "ARRIBADO" || eu === "RAMPA";
@@ -85,8 +89,18 @@ function classifyRisks(rows){
             const loadPhase = riskPhase(loadHours);
             if(loadPhase !== null){
                 transportRisk.push({ row, phase: loadPhase, hours: loadHours });
+                return;
             }
+            unclassified.push({row, reason: `Por Arribar pero loadStart fuera de riesgo (${loadHours !== null ? loadHours.toFixed(1)+"h restantes" : "fecha invalida"})`});
+            return;
         }
+
+        if(hasArrived && isFinalized){
+            unclassified.push({row, reason: "Ya llegó y está Finalizado (sin riesgo)"});
+            return;
+        }
+
+        unclassified.push({row, reason: `Estatus Unidades no reconocido: "${row.unitStatus}"`});
 
     });
 
@@ -95,7 +109,7 @@ function classifyRisks(rows){
     maxAlert.sort(byUrgency);
     transportRisk.sort(byUrgency);
 
-    return { maxAlert, warehouseRisk, transportRisk };
+    return { maxAlert, warehouseRisk, transportRisk, unclassified };
 
 }
 
@@ -103,7 +117,7 @@ export function renderRisks(){
 
     const rows = store.allRows; // Riesgos evalua TODOS los datos, no solo el filtro de fecha de Operacion
 
-    const { maxAlert, warehouseRisk, transportRisk } = classifyRisks(rows);
+    const { maxAlert, warehouseRisk, transportRisk, unclassified } = classifyRisks(rows);
 
     document.getElementById("risk-max-count").textContent = maxAlert.length;
     document.getElementById("risk-almacen-count").textContent = warehouseRisk.length;
@@ -112,6 +126,25 @@ export function renderRisks(){
     renderRiskList("risk-max-list", maxAlert, {showRole: true});
     renderRiskList("risk-almacen-list", warehouseRisk, {showRole: false, staticPhase: "amber"});
     renderRiskList("risk-transporte-list", transportRisk, {showRole: false});
+
+    // Diagnostico: abre la consola del navegador y escribe
+    // debugRiskCN("2607044187") para ver por que un CN especifico
+    // no aparece en ninguna tarjeta de riesgo.
+    window.debugRiskCN = (cn) => {
+        const match = unclassified.find(u => u.row.cn === cn);
+        if(match){
+            console.log(`CN ${cn} — Sin clasificar. Razón: ${match.reason}`);
+            console.log("Datos completos:", match.row);
+        } else {
+            const inMax = maxAlert.find(i => i.row.cn === cn);
+            const inAlm = warehouseRisk.find(i => i.row.cn === cn);
+            const inTra = transportRisk.find(i => i.row.cn === cn);
+            if(inMax) console.log(`CN ${cn} está en Alerta Máxima`, inMax);
+            else if(inAlm) console.log(`CN ${cn} está en Riesgo de Almacén`, inAlm);
+            else if(inTra) console.log(`CN ${cn} está en Riesgo de Transporte`, inTra);
+            else console.log(`CN ${cn} no se encontró en los datos cargados.`);
+        }
+    };
 
 }
 

@@ -103,7 +103,6 @@ export function phaseColor(phase){
  */
 export function phaseFillPercent(hoursRemaining, phase){
     if(phase === "expired") return 100;
-    if(phase === null) return 0;
 
     const bounds = {
         green:  [4, 3],
@@ -111,6 +110,8 @@ export function phaseFillPercent(hoursRemaining, phase){
         orange: [2, 1],
         red:    [1, 0]
     };
+
+    if(!bounds[phase]) return 0;
 
     const [hi, lo] = bounds[phase];
     const pct = ((hoursRemaining - lo) / (hi - lo)) * 100;

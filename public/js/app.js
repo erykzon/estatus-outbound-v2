@@ -16,7 +16,7 @@ import { initTheme } from "./theme.js";
 import { initNav, onSectionChange } from "./nav.js";
 import { initOperationFilters, renderOperation } from "./operation.js";
 import { renderRisks } from "./risks.js";
-import { renderPreparation } from "./preparation.js";
+import { renderPreparation, initPreparationFilters } from "./preparation.js";
 import { renderCharts, initChartsFilters } from "./charts.js";
 import { initSearch } from "./search.js";
 
@@ -72,6 +72,7 @@ onSectionChange((sectionId) => {
     }
 
     if(sectionId === "preparation"){
+        initPreparationFilters();
         renderPreparation();
         renderedSections.add("preparation");
     }

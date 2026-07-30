@@ -234,6 +234,7 @@ function renderWarehousePunctuality(rows){
 function renderArrivalTrend(rows){
 
     const buckets = {};
+    const bucketRows = {};
     let noDataCount = 0;
     const noDataRows = [];
 
@@ -250,6 +251,9 @@ function renderArrivalTrend(rows){
         const hour = arrival.getHours();
         const bucket = `${String(hour).padStart(2,"0")}:00`;
         buckets[bucket] = (buckets[bucket] || 0) + 1;
+
+        if(!bucketRows[bucket]) bucketRows[bucket] = [];
+        bucketRows[bucket].push(r);
 
     });
 
@@ -282,6 +286,21 @@ function renderArrivalTrend(rows){
                 scales: {
                     x: { ticks: { font: { size: 10 } } },
                     y: { ticks: { font: { size: 11 } }, grid: { color: "var(--border2)" } }
+                },
+                onClick: (evt, elements) => {
+                    if(!elements.length) return;
+                    const idx = elements[0].index;
+                    const label = labels[idx];
+                    const list = bucketRows[label] || [];
+                    openModal({
+                        title: `Arribos a las ${label}`,
+                        subtitle: `${list.length} registro${list.length!==1?"s":""}`,
+                        rows: list,
+                        showCita: false
+                    });
+                },
+                onHover: (evt, elements) => {
+                    evt.native.target.style.cursor = elements.length ? "pointer" : "default";
                 }
             }
         });

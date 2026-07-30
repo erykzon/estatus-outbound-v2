@@ -8,15 +8,53 @@
  * ============================================================
  */
 
-import { store } from "./store.js";
+import { store, applyPreparationFilters, getWarehouseList } from "./store.js";
 import { formatNumber, formatDate, normalizeText } from "./utils.js";
 import { openModal } from "./modal.js";
 
 let statusFilterWired = false;
+let prepFiltersWired = false;
+
+export function initPreparationFilters(){
+
+    const warehouses = getWarehouseList();
+    const select = document.getElementById("prep-warehouse");
+
+    if(select){
+        select.innerHTML = '<option value="">Todos</option>';
+        warehouses.forEach(w => {
+            const opt = document.createElement("option");
+            opt.value = w;
+            opt.textContent = w;
+            select.appendChild(opt);
+        });
+    }
+
+    if(!prepFiltersWired){
+        const applyBtn = document.getElementById("prep-apply-btn");
+        if(applyBtn){
+            applyBtn.addEventListener("click", handleApplyPreparationFilters);
+        }
+        prepFiltersWired = true;
+    }
+
+}
+
+function handleApplyPreparationFilters(){
+
+    applyPreparationFilters({
+        dateStart: document.getElementById("prep-date-start").value,
+        dateEnd: document.getElementById("prep-date-end").value,
+        warehouse: document.getElementById("prep-warehouse").value
+    });
+
+    renderPreparation();
+
+}
 
 export function renderPreparation(){
 
-    const rows = store.allRows;
+    const rows = store.preparation.filteredRows;
 
     renderVolumeCards(rows);
     renderSharedCNs(rows);
@@ -25,7 +63,7 @@ export function renderPreparation(){
     if(!statusFilterWired){
         const select = document.getElementById("prep-delayed-status-filter");
         if(select){
-            select.addEventListener("change", () => renderDelayedCNs(store.allRows));
+            select.addEventListener("change", () => renderDelayedCNs(store.preparation.filteredRows));
             statusFilterWired = true;
         }
     }
