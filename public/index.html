@@ -133,11 +133,10 @@
                     <div class="prep-card-value" id="prep-insumos-value">0</div>
                     <div class="prep-card-sub" id="prep-insumos-sub">—</div>
                 </div>
-            </div>
-
-            <div class="table-card" style="margin-bottom:16px">
-                <div class="table-title">CNs compartidos entre almacenes</div>
-                <div class="table-wrap" id="prep-shared-table"></div>
+                <div class="prep-card" style="max-height:220px;display:flex;flex-direction:column">
+                    <div class="prep-card-title">CNs compartidos</div>
+                    <div class="table-wrap" id="prep-shared-table" style="flex:1;overflow-y:auto;font-size:11px"></div>
+                </div>
             </div>
 
             <div class="table-card">
@@ -157,7 +156,11 @@
             <div class="toolbar">
                 <div class="filter-group">
                     <label>Fecha</label>
-                    <input type="date" id="charts-date">
+                    <input type="date" id="charts-date-start">
+                </div>
+                <div class="filter-group">
+                    <label>Hasta</label>
+                    <input type="date" id="charts-date-end">
                 </div>
                 <div class="filter-group">
                     <label>Almacén</label>
