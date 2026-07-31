@@ -23,7 +23,7 @@ import { openModal } from "./modal.js";
 const EXCLUDED_ORDER_STATUS = ["1-CANCELADO", "12-REPROGRAMADO"];
 
 const EXCLUDED_DELIVERY_MODES = [
-    "CLIENTE RECOGE", "BACKHAUL", "BAZ", "WEPAY", "DSV", "VENDOR FLEX"
+    "CN Manual","CLIENTE RECOGE", "BACKHAUL", "BAZ", "WEPAY", "DSV", "VENDOR FLEX"
 ];
 
 function isExcluded(row){
