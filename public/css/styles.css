@@ -283,7 +283,7 @@ tr.clickable:hover td{background:var(--border2)}
    PREPARACION
    ============================================================ */
 .prep-grid{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  display:grid;grid-template-columns:1fr 1fr 1fr 2fr;
   gap:12px;margin-bottom:16px;
 }
 .prep-card{
@@ -389,6 +389,7 @@ tr.clickable:hover td{background:var(--border2)}
   .alm-grid{grid-template-columns:1fr}
   .risk-columns{grid-template-columns:1fr}
   .prep-grid{grid-template-columns:1fr 1fr}
+  .prep-grid > div:last-child{grid-column:1 / -1}
   .info{flex-direction:column}
   .drawer{width:100%;max-width:100%}
 }

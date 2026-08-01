@@ -61,11 +61,15 @@ export function renderPreparation(){
     renderDelayedCNs(rows);
 
     if(!statusFilterWired){
-        const select = document.getElementById("prep-delayed-status-filter");
-        if(select){
-            select.addEventListener("change", () => renderDelayedCNs(store.preparation.filteredRows));
-            statusFilterWired = true;
+        const statusSelect = document.getElementById("prep-delayed-status-filter");
+        if(statusSelect){
+            statusSelect.addEventListener("change", () => renderDelayedCNs(store.preparation.filteredRows));
         }
+        const warehouseSelect = document.getElementById("prep-delayed-warehouse-filter");
+        if(warehouseSelect){
+            warehouseSelect.addEventListener("change", () => renderDelayedCNs(store.preparation.filteredRows));
+        }
+        statusFilterWired = true;
     }
 
 }
@@ -152,13 +156,19 @@ function renderDelayedCNs(rows){
     });
 
     populateDelayedStatusFilter(delayed);
+    populateDelayedWarehouseFilter(delayed);
 
     const statusFilter = document.getElementById("prep-delayed-status-filter");
     const selectedStatus = statusFilter ? statusFilter.value : "";
 
-    const visibleRows = selectedStatus
-        ? delayed.filter(r => r.orderStatus === selectedStatus)
-        : delayed;
+    const warehouseFilter = document.getElementById("prep-delayed-warehouse-filter");
+    const selectedWarehouse = warehouseFilter ? warehouseFilter.value : "";
+
+    const visibleRows = delayed.filter(r => {
+        if(selectedStatus && r.orderStatus !== selectedStatus) return false;
+        if(selectedWarehouse && r.warehouse !== selectedWarehouse) return false;
+        return true;
+    });
 
     renderDelayedTable(visibleRows, delayed.length);
 
@@ -177,6 +187,23 @@ function populateDelayedStatusFilter(delayed){
         statuses.map(s => `<option value="${s}">${s}</option>`).join("");
 
     if(statuses.includes(currentValue)){
+        select.value = currentValue;
+    }
+
+}
+
+function populateDelayedWarehouseFilter(delayed){
+
+    const select = document.getElementById("prep-delayed-warehouse-filter");
+    if(!select) return;
+
+    const currentValue = select.value;
+    const warehouses = [...new Set(delayed.map(r => r.warehouse).filter(Boolean))].sort();
+
+    select.innerHTML = '<option value="">Todos los almacenes</option>' +
+        warehouses.map(w => `<option value="${w}">${w}</option>`).join("");
+
+    if(warehouses.includes(currentValue)){
         select.value = currentValue;
     }
 
