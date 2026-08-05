@@ -133,23 +133,28 @@
                     <div class="prep-card-value" id="prep-insumos-value">0</div>
                     <div class="prep-card-sub" id="prep-insumos-sub">—</div>
                 </div>
-                <div class="prep-card" style="max-height:220px;display:flex;flex-direction:column">
-                    <div class="prep-card-title">CNs compartidos</div>
-                    <div class="table-wrap" id="prep-shared-table" style="flex:1;overflow-y:auto;font-size:11px"></div>
-                </div>
             </div>
 
-            <div class="table-card">
-                <div class="table-title" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-                    <span>CNs rezagados <span class="pill"><b id="prep-delayed-count">0</b></span></span>
-                    <select id="prep-delayed-warehouse-filter" style="margin-left:auto;font-size:12px;border:1px solid var(--border);border-radius:7px;padding:4px 8px;background:var(--card);color:var(--text);height:28px">
-                        <option value="">Todos los almacenes</option>
-                    </select>
-                    <select id="prep-delayed-status-filter" style="font-size:12px;border:1px solid var(--border);border-radius:7px;padding:4px 8px;background:var(--card);color:var(--text);height:28px">
-                        <option value="">Todos los estatus</option>
-                    </select>
+            <div class="alm-grid" style="grid-template-columns:1fr 1.6fr">
+
+                <div class="table-card">
+                    <div class="table-title">CNs compartidos</div>
+                    <div class="table-wrap" id="prep-shared-table" style="max-height:340px"></div>
                 </div>
-                <div class="table-wrap" id="prep-delayed-table"></div>
+
+                <div class="table-card">
+                    <div class="table-title" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                        <span>CNs rezagados <span class="pill"><b id="prep-delayed-count">0</b></span></span>
+                        <select id="prep-delayed-warehouse-filter" style="margin-left:auto;font-size:12px;border:1px solid var(--border);border-radius:7px;padding:4px 8px;background:var(--card);color:var(--text);height:28px">
+                            <option value="">Todos los almacenes</option>
+                        </select>
+                        <select id="prep-delayed-status-filter" style="font-size:12px;border:1px solid var(--border);border-radius:7px;padding:4px 8px;background:var(--card);color:var(--text);height:28px">
+                            <option value="">Todos los estatus</option>
+                        </select>
+                    </div>
+                    <div class="table-wrap" id="prep-delayed-table"></div>
+                </div>
+
             </div>
 
         </section>
