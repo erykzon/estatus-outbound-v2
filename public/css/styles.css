@@ -157,26 +157,37 @@ body{
   display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
   gap:12px;margin-bottom:16px;
 }
-.kpi{
-  position:relative;overflow:hidden;border-radius:16px;
-  padding:18px 20px;box-shadow:var(--shadow);color:#fff;
-  min-height:110px;display:flex;flex-direction:column;justify-content:center;
-}
-.kpi::after{
-  content:"";position:absolute;top:-30%;right:-15%;width:120px;height:120px;
-  border-radius:50%;background:rgba(255,255,255,0.12);
-}
-.kpi-icon{
-  position:absolute;top:14px;right:16px;font-size:20px;opacity:.85;z-index:1;
-}
-.kpi-title{font-size:11px;opacity:.85;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;position:relative;z-index:1}
-.kpi-value{font-size:34px;font-weight:800;line-height:1;position:relative;z-index:1}
-.kpi-sub{font-size:11px;opacity:.85;margin-top:6px;position:relative;z-index:1}
 
-.kpi-cns{background:linear-gradient(135deg,#378ADD,#2FB4E8)}
+/* Tarjeta base sobria (Embarcado, Por arribar, y las de Preparacion) */
+.kpi{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:16px 18px;box-shadow:var(--shadow);
+  min-height:96px;display:flex;flex-direction:column;justify-content:center;
+}
+.kpi-title{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.kpi-value{font-size:28px;font-weight:700;color:var(--text);line-height:1}
+.kpi-sub{font-size:11px;color:var(--text2);margin-top:6px}
+
+/* Tarjetas destacadas con degradado (CN Totales y Piezas) — composicion
+   horizontal numero grande + unidad chica, inspirada en referencia CRM */
+.kpi-featured{
+  position:relative;overflow:hidden;border:none;color:#fff;
+  padding:16px 20px;min-height:96px;
+}
+.kpi-featured::after{
+  content:"";position:absolute;top:-40%;right:-10%;width:110px;height:110px;
+  border-radius:50%;background:rgba(255,255,255,0.10);
+}
+.kpi-featured .kpi-title{color:rgba(255,255,255,.85)}
+.kpi-featured .kpi-value-row{display:flex;align-items:baseline;gap:6px;position:relative;z-index:1}
+.kpi-featured .kpi-value{font-size:32px;font-weight:800;color:#fff}
+.kpi-featured .kpi-unit{font-size:13px;font-weight:600;color:rgba(255,255,255,.8)}
+
+.kpi-cns{background:linear-gradient(135deg,#7C5CFF,#2FB4E8)}
 .kpi-pieces{background:linear-gradient(135deg,#1D9E75,#2fd898)}
-.kpi-embarcado{background:linear-gradient(135deg,#0F6E56,#1D9E75)}
-.kpi-porarribar{background:linear-gradient(135deg,#E24B4A,#ff6b8a)}
+
+.kpi-embarcado .kpi-value{color:var(--teal)}
+.kpi-porarribar .kpi-value{color:var(--red)}
 
 /* ============================================================
    TARJETAS DE ALMACEN (Operacion)
@@ -303,24 +314,17 @@ tr.clickable:hover td{background:var(--border2)}
   gap:12px;margin-bottom:16px;
 }
 .prep-card{
-  position:relative;overflow:hidden;border-radius:16px;
-  padding:18px 20px;box-shadow:var(--shadow);color:#fff;
-  min-height:110px;display:flex;flex-direction:column;justify-content:center;
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:16px 18px;box-shadow:var(--shadow);
+  min-height:96px;display:flex;flex-direction:column;justify-content:center;
 }
-.prep-card::after{
-  content:"";position:absolute;top:-30%;right:-15%;width:120px;height:120px;
-  border-radius:50%;background:rgba(255,255,255,0.12);
-}
-.prep-card-icon{
-  position:absolute;top:14px;right:16px;font-size:20px;opacity:.85;z-index:1;
-}
-.prep-card-title{font-size:11px;opacity:.85;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;position:relative;z-index:1}
-.prep-card-value{font-size:34px;font-weight:800;line-height:1;position:relative;z-index:1}
-.prep-card-sub{font-size:11px;opacity:.85;margin-top:6px;position:relative;z-index:1}
+.prep-card-title{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.prep-card-value{font-size:28px;font-weight:700;color:var(--text)}
+.prep-card-sub{font-size:11px;color:var(--text2);margin-top:6px}
 
-.prep-card-armado{background:linear-gradient(135deg,#7C5CFF,#9d7cff)}
-.prep-card-upc{background:linear-gradient(135deg,#BA7517,#ffb547)}
-.prep-card-insumos{background:linear-gradient(135deg,#D85A30,#ff8f5c)}
+.prep-card-armado .prep-card-value{color:var(--accent)}
+.prep-card-upc .prep-card-value{color:var(--amber)}
+.prep-card-insumos .prep-card-value{color:var(--orange)}
 
 /* ============================================================
    MODAL / PANEL DESLIZABLE
